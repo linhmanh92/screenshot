@@ -50,8 +50,7 @@ class ScreenshotController {
           delay: Duration.zero,
           pixelRatio: pixelRatio,
         );
-        ByteData? byteData =
-            await image?.toByteData(format: ui.ImageByteFormat.png);
+        ByteData? byteData = await image?.toByteData(format: ui.ImageByteFormat.png);
         image?.dispose();
 
         Uint8List? pngBytes = byteData?.buffer.asUint8List();
@@ -64,22 +63,18 @@ class ScreenshotController {
   }
 
   Future<ui.Image?> captureAsUiImage(
-      {double? pixelRatio = 1,
-      Duration delay = const Duration(milliseconds: 20)}) {
+      {double? pixelRatio = 1, Duration delay = const Duration(milliseconds: 20)}) {
     //Delay is required. See Issue https://github.com/flutter/flutter/issues/22308
     return new Future.delayed(delay, () async {
       try {
-        var findRenderObject =
-            this._containerKey.currentContext?.findRenderObject();
+        var findRenderObject = this._containerKey.currentContext?.findRenderObject();
         if (findRenderObject == null) {
           return null;
         }
-        RenderRepaintBoundary boundary =
-            findRenderObject as RenderRepaintBoundary;
+        RenderRepaintBoundary boundary = findRenderObject as RenderRepaintBoundary;
         BuildContext? context = _containerKey.currentContext;
         if (pixelRatio == null) {
-          if (context != null)
-            pixelRatio = pixelRatio ?? MediaQuery.of(context).devicePixelRatio;
+          if (context != null) pixelRatio = pixelRatio ?? MediaQuery.of(context).devicePixelRatio;
         }
         ui.Image image = await boundary.toImage(pixelRatio: pixelRatio ?? 1);
         return image;
@@ -104,12 +99,8 @@ class ScreenshotController {
     Size? targetSize,
   }) async {
     ui.Image image = await widgetToUiImage(widget,
-        delay: delay,
-        pixelRatio: pixelRatio,
-        context: context,
-        targetSize: targetSize);
-    final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+        delay: delay, pixelRatio: pixelRatio, context: context, targetSize: targetSize);
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     image.dispose();
 
     return byteData!.buffer.asUint8List();
@@ -150,22 +141,18 @@ class ScreenshotController {
     final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
     final platformDispatcher = WidgetsBinding.instance.platformDispatcher;
     final fallBackView = platformDispatcher.views.first;
-    final view =
-        context == null ? fallBackView : View.maybeOf(context) ?? fallBackView;
-    Size logicalSize =
-        targetSize ?? view.physicalSize / view.devicePixelRatio; // Adapted
+    final view = context == null ? fallBackView : View.maybeOf(context) ?? fallBackView;
+    Size logicalSize = targetSize ?? view.physicalSize / view.devicePixelRatio; // Adapted
     Size imageSize = targetSize ?? view.physicalSize; // Adapted
 
     assert(logicalSize.aspectRatio.toStringAsPrecision(5) ==
-        imageSize.aspectRatio
-            .toStringAsPrecision(5)); // Adapted (toPrecision was not available)
+        imageSize.aspectRatio.toStringAsPrecision(5)); // Adapted (toPrecision was not available)
 
     final RenderView renderView = RenderView(
       view: view,
-      child: RenderPositionedBox(
-          alignment: Alignment.center, child: repaintBoundary),
+      child: RenderPositionedBox(alignment: Alignment.center, child: repaintBoundary),
       configuration: ViewConfiguration(
-        size: logicalSize,
+        // size: logicalSize,
         devicePixelRatio: pixelRatio ?? 1.0,
       ),
     );
@@ -264,7 +251,7 @@ class ScreenshotController {
   /// ## Notes on Usage:
   ///     1. Do not use any scrolling widgets like ListView,GridView. Convert those widgets to use Columns and Rows.
   ///     2. Do not Widgets like `Flexible`,`Expanded`, or `Spacer`. If you do Please consider passing constraints.
-  /// 
+  ///
   /// Params:
   ///
   /// [widget] : The Widget which needs to be captured.
@@ -291,8 +278,7 @@ class ScreenshotController {
       context: context,
       constraints: constraints ?? BoxConstraints(),
     );
-    final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     image.dispose();
 
     return byteData!.buffer.asUint8List();
@@ -306,11 +292,9 @@ class ScreenshotController {
         maxHeight: double.maxFinite,
       )}) async {
     final PipelineOwner pipelineOwner = PipelineOwner();
-    final _MeasurementView rootView =
-        pipelineOwner.rootNode = _MeasurementView(constraints);
+    final _MeasurementView rootView = pipelineOwner.rootNode = _MeasurementView(constraints);
     final BuildOwner buildOwner = BuildOwner(focusManager: FocusManager());
-    final RenderObjectToWidgetElement<RenderBox> element =
-        RenderObjectToWidgetAdapter<RenderBox>(
+    final RenderObjectToWidgetElement<RenderBox> element = RenderObjectToWidgetAdapter<RenderBox>(
       container: rootView,
       debugShortDescription: 'root_render_element_for_size_measurement',
       child: Directionality(
@@ -335,8 +319,7 @@ class ScreenshotController {
       );
     } finally {
       // Clean up.
-      element
-          .update(RenderObjectToWidgetAdapter<RenderBox>(container: rootView));
+      element.update(RenderObjectToWidgetAdapter<RenderBox>(container: rootView));
       buildOwner.finalizeTree();
     }
   }
@@ -383,8 +366,7 @@ extension Ex on double {
 ///
 /// RenderBox widget to calculate size.
 ///
-class _MeasurementView extends RenderBox
-    with RenderObjectWithChildMixin<RenderBox> {
+class _MeasurementView extends RenderBox with RenderObjectWithChildMixin<RenderBox> {
   final BoxConstraints boxConstraints;
   _MeasurementView(this.boxConstraints);
 
